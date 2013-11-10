@@ -1,0 +1,55 @@
+
+
+format
+------
+io:format("~6.10.0B-~2.10.0B~n", [2011, 1]).
+002011-01
+
+beam info
+---------
+beam_lib:chunks(Bin,[compile_info])
+
+ets matchspec
+-------------
+select everything:
+ets:select(t1, [{'_',[],['$_']}])
+
+delete:
+2=ets:select_delete(t1,[{{'$1','$2'},[], [true]}]).
+
+trace
+-----
+%% complex matching to trace calls to
+%% storage:execute_sql(Query, Params2, S) where Query is a list of strings:
+%% ["select transaction.\"Id\", ", ....]
+%% and do not trace calls to execute_sql/3 with other queries
+M3 = dbg:fun2ms(fun([["select transaction.\"Id\", " | _],_,_])->true;
+(_) -> message(false) end).
+
+F1=dbg:trace_port(ip,{8091,1000}).
+dbg:tracer(port,F1).
+dbg:p(all,[c]). %% or dbg:p('proc_cache_handler', [c,m])
+M1=dbg:fun2ms(fun(_)->true,return_trace()end).
+dbg:tpl(sql_transaction,M1).
+dbg:tpl(sql_db,M1).
+dbg:tpl(user_server_http,M1).
+
+or to file:
+F2 = dbg:trace_port(file, {"/tmp/trc/t6-", wrap, ".trc", 200000000})
+dbg:tracer(port,F2)
+dbg:p(all,[c])
+[dbg:tpl(X,M1) || X <- [mon_acc, mon_lim, mon_util, user_server_http,
+user_limit]]
+
+in the end, optional:
+dbg:ctpl('_').
+dbg:flush_trace_port().
+dbg:stop_clear().
+
+on client:
+F1=dbg:trace_client(ip,8091).
+
+from command line
+erl -eval 'dbg:trace_client(file,"xxx"), init:stop().'
+
+
