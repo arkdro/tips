@@ -1,4 +1,9 @@
-
+code load
+---------
+Mod = xxxxx.
+{ok, Bin} = file:read_file(File).
+code:load_binary(Mod, File, Bin).
+rpc:call(N, code, load_binary, [Mod, File, Bin]).
 
 format
 ------
