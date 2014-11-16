@@ -57,4 +57,4 @@ F1=dbg:trace_client(ip,8091).
 from command line
 erl -eval 'dbg:trace_client(file,"xxx"), init:stop().'
 
-
+cat %f | sed -e 's/^     */    /' > %f-2
