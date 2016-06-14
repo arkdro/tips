@@ -5,6 +5,10 @@ Mod = xxxxx.
 code:load_binary(Mod, File, Bin).
 rpc:call(N, code, load_binary, [Mod, File, Bin]).
 
+in a separate node:
+start a node. Then add paths for all the apps and deps:
+code:add_paths(filelib:wildcard("..../Server/??ps/*/ebin")).
+
 format
 ------
 io:format("~6.10.0B-~2.10.0B~n", [2011, 1]).
