@@ -9,6 +9,15 @@ in a separate node:
 start a node. Then add paths for all the apps and deps:
 code:add_paths(filelib:wildcard("..../Server/??ps/*/ebin")).
 
+F = fun(Node, Mod, File) ->
+  {ok, Bin} = file:read_file(File),
+  code:load_binary(Mod, File, Bin),
+  rpc:call(Node, code, load_binary, [Mod, File, Bin])
+end.
+
+F1 = fun(Mod, File) -> F(N1, Mod, File) end.
+Fa = fun(Mod, File) -> [F(X, Mod, File) || X <- Nodes] end.
+
 format
 ------
 io:format("~6.10.0B-~2.10.0B~n", [2011, 1]).
