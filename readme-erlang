@@ -1,3 +1,13 @@
+lager
+-----
+lager:set_loglevel(lager_console_backend, critical).
+[{X, lager:get_loglevel(X)} || X <- gen_event:which_handlers(lager_event)].
+
+code
+----
+which pid contains the old version of ejabberd_listener code.
+[Pid || Pid <- processes(), erlang:check_process_code(Pid, ejabberd_listener)].
+
 code load
 ---------
 Mod = xxxxx.
